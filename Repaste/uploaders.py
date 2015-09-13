@@ -30,6 +30,8 @@
 
 import requests
 
+import supybot.log as log
+
 
 class Ptpb(object):
     def paste(data):
@@ -37,7 +39,11 @@ class Ptpb(object):
                             headers={'Accept': 'application/json'},
                             data={'c': data})
 
-        parsed = res.json()
+        try:
+            parsed = res.json()
+        except ValueError:
+            log.error(res.content)
+
         if 'url' in parsed:
             return parsed['url']
         else:
