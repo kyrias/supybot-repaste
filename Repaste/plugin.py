@@ -64,7 +64,7 @@ def repaste_pastebin_com(irc, msg):
         old_res = requests.get('https://pastebin.com/raw.php?i={}'.format(id))
         new_res = requests.post('https://ptpb.pw/',
                                 headers={'Accept': 'application/json'},
-                                data={'c': res.text})
+                                data={'c': old_res.text})
 
         response = new_res.json()
         irc.reply(_('{id:} was repasted as {url:}').format(id=id, url=response['url']))
