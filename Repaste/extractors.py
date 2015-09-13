@@ -30,6 +30,7 @@
 
 import re
 import requests
+import subprocess
 
 try:
     from supybot.i18n import PluginInternationalization
@@ -100,3 +101,35 @@ class HastebinCom(object):
 
             url = Ptpb.paste(res.content)
             notify(irc, id, url)
+
+
+class Zerobin(object):
+    def repaste(irc, string):
+        if not re.search(r'https?://[\w.]*/\?\w*#[\w/+=]*', string):
+            return
+
+        urls = Zerobin.get_urls(string)
+        Zerobin.repaste_urls(irc, urls)
+
+    def get_urls(string):
+        regex = r'(https?://[\w.]*/\?\w*#[\w/+=]*)'
+
+        urls = set()
+        [urls.add(url) for url in re.findall(regex, string)]
+
+        return urls
+
+    def repaste_urls(irc, urls):
+        for url in urls:
+            proc = subprocess.Popen(['getpaste', url],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+
+            if err == b'error: decryption failed\n':
+                irc.reply(_('Failed to repaste {id:} as a zerobin paste, '
+                            'please repaste to a saner pastebin manually.'
+                            ).format(id=id))
+
+            url = Ptpb.paste(out)
+            notify(irc, 'zerobin paste', url)

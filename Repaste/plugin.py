@@ -28,6 +28,8 @@
 
 ###
 
+import subprocess
+
 import supybot.callbacks as callbacks
 try:
     from supybot.i18n import PluginInternationalization
@@ -39,7 +41,7 @@ except ImportError:
     _ = lambda x: x
     internationalizeDocstring = lambda x: x
 
-from .extractors import (HastebinCom, PastebinCom)
+from .extractors import (HastebinCom, PastebinCom, Zerobin)
 
 
 @internationalizeDocstring
@@ -55,12 +57,25 @@ class Repaste(callbacks.Plugin):
             HastebinCom,
             PastebinCom,
         ]
+        if self.getpaste_working():
+            self.pastebins.append(Zerobin)
 
     def doPrivmsg(self, irc, msg):
         string = msg.args[1]
 
         for pastebin in self.pastebins:
             pastebin.repaste(irc, string)
+
+    def getpaste_working(self):
+        try:
+            if subprocess.call(['getpaste']) != 1:
+                self.log.warning("getpaste script not fully functional, zerobin"
+                                 "support disabled")
+                return False
+            return True
+        except:
+            self.log.warning("getpaste script could not be found.")
+            return False
 
 
 Class = Repaste
