@@ -81,6 +81,9 @@ class Repaste(callbacks.Plugin):
     threaded = True
 
     def __init__(self, irc):
+        self._parent = super(Repaste, self)
+        self._parent.__init__(irc)
+
         self.pastebins = [
             PastebinCom,
         ]
