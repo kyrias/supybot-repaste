@@ -74,3 +74,30 @@ class PastebinCom(object):
 
             url = Ptpb.paste(res.content)
             notify(irc, url)
+
+
+def HastebinCom(object):
+    def repaste(irc, string):
+        if 'hastebin.com' not in string:
+            return
+
+        ids = HastebinCom.get_ids(string)
+        HastebinCom.repaste_ids(irc, ids)
+
+
+    def get_ids(string):
+        regex = r'hastebin.com/(\w*)'
+
+        ids = set()
+        [ids.add(id) for id in re.findall(regex, string)
+                            if not id == 'raw']
+
+        return ids
+
+    def repaste_ids(irc, ids):
+        for id in ids:
+            res = requests.get('http://hastebin.com/raw/{id:}.hs'.
+                               format(id=id))
+
+            url = Ptpb.paste(res.content)
+            notify(irc, url)
