@@ -68,14 +68,15 @@ class Repaste(callbacks.Plugin):
 
     def getpaste_working(self):
         try:
-            if subprocess.call(['getpaste']) != 1:
-                self.log.warning("getpaste script not fully functional, zerobin"
-                                 "support disabled")
+            if subprocess.call(['getpaste', '--check-deps']) != 0:
+                self.log.warning('getpaste script not fully functional, '
+                                 'zerobin support disabled')
                 return False
-            return True
         except:
-            self.log.warning("getpaste script could not be found.")
+            self.log.warning('getpaste script could not be found.')
             return False
+
+        return True
 
 
 Class = Repaste
