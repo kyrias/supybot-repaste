@@ -39,7 +39,7 @@ except ImportError:
     _ = lambda x: x
     internationalizeDocstring = lambda x: x
 
-from .extractors import PastebinCom
+from .extractors import (HastebinCom, PastebinCom)
 
 
 @internationalizeDocstring
@@ -52,6 +52,7 @@ class Repaste(callbacks.Plugin):
         self._parent.__init__(irc)
 
         self.pastebins = [
+            HastebinCom,
             PastebinCom,
         ]
 
