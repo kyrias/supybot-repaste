@@ -40,7 +40,7 @@ except ImportError:
 from .uploaders import Ptpb
 
 
-def notify(irc, url):
+def notify(irc, id, url):
     if url:
         irc.reply(_('{id:} was repasted as {url:}').
                   format(id=id, url=url))
@@ -73,7 +73,7 @@ class PastebinCom(object):
                                format(id))
 
             url = Ptpb.paste(res.content)
-            notify(irc, url)
+            notify(irc, id, url)
 
 
 class HastebinCom(object):
@@ -100,4 +100,4 @@ class HastebinCom(object):
                                format(id=id))
 
             url = Ptpb.paste(res.content)
-            notify(irc, url)
+            notify(irc, id, url)
