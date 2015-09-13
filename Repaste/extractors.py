@@ -40,6 +40,15 @@ except ImportError:
 from .uploaders import Ptpb
 
 
+def notify(irc, url):
+    if url:
+        irc.reply(_('{id:} was repasted as {url:}').
+                  format(id=id, url=url))
+    else:
+        irc.reply(_('Failed to repaste {id:}, please repaste to a'
+                    'saner pastebin manually.').format(id=id))
+
+
 class PastebinCom(object):
     def repaste(irc, string):
         if 'pastebin.com' not in string:
@@ -64,9 +73,4 @@ class PastebinCom(object):
                                format(id))
 
             url = Ptpb.paste(res.content)
-            if url:
-                irc.reply(_('{id:} was repasted as {url:}').
-                          format(id=id, url=url))
-            else:
-                irc.reply(_('Failed to repaste {id:}, please repaste to a'
-                            'saner pastebin manually.').format(id=id))
+            notify(irc, url)
