@@ -44,31 +44,35 @@ import re
 import requests
 
 
-def get_pastebin_com_ids(string):
-    regex = r'pastebin\.com/(\w{8})'
-    raw_regex = r'pastebin\.com/raw.php\?i=(\w{8})'
+class PastebinCom(object):
+    def repaste(irc, string):
+        if 'pastebin.com' not in string:
+            return
 
-    ids = set()
-    [ids.add(id) for id in re.findall(regex, string)]
-    [ids.add(id) for id in re.findall(raw_regex, string)]
+        ids = PastebinCom.get_ids(string)
+        PastebinCom.repaste_ids(irc, ids)
 
-    return ids
+    def get_ids(string):
+        regex = r'pastebin\.com/(\w{8})'
+        raw_regex = r'pastebin\.com/raw.php\?i=(\w{8})'
 
+        ids = set()
+        [ids.add(id) for id in re.findall(regex, string)]
+        [ids.add(id) for id in re.findall(raw_regex, string)]
 
-def repaste_pastebin_com(irc, msg):
-    ids = get_pastebin_com_ids(msg)
-    if not len(ids) > 0:
-        return
+        return ids
 
-    for id in ids:
-        old_res = requests.get('https://pastebin.com/raw.php?i={}'.format(id))
-        new_res = requests.post('https://ptpb.pw/',
-                                headers={'Accept': 'application/json'},
-                                data={'c': old_res.text})
+    def repaste_ids(irc, ids):
+        for id in ids:
+            old_res = requests.get('https://pastebin.com/raw.php?i={}'.
+                                   format(id))
+            new_res = requests.post('https://ptpb.pw/',
+                                    headers={'Accept': 'application/json'},
+                                    data={'c': old_res.text})
 
-        response = new_res.json()
-        irc.reply(_('{id:} was repasted as {url:}').
-                  format(id=id, url=response['url']))
+            response = new_res.json()
+            irc.reply(_('{id:} was repasted as {url:}').
+                      format(id=id, url=response['url']))
 
 
 @internationalizeDocstring
@@ -76,8 +80,16 @@ class Repaste(callbacks.Plugin):
     """Repaste URLs from bad pastebins"""
     threaded = True
 
+    def __init__(self, irc):
+        self.pastebins = [
+            PastebinCom,
+        ]
+
     def doPrivmsg(self, irc, msg):
-        repaste_pastebin_com(irc, msg.args[1])
+        string = msg.args[1]
+
+        for pastebin in self.pastebins:
+            pastebin.repaste(irc, string)
 
 
 Class = Repaste
