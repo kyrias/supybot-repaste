@@ -29,7 +29,7 @@
 ###
 
 """
-Repaste: Repaste pastebin.com URLs
+Repaste: Repastes URLs from bad pastebins to https://ptpb.pw
 """
 
 import supybot
