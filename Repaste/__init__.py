@@ -48,7 +48,7 @@ __author__ = supybot.Author('Johannes Löthberg', 'demize',
 __contributors__ = {}
 
 # This is a url where the most recent plugin package can be downloaded.
-__url__ = ''
+__url__ = 'https://github.com/kyrias/supybot-repaste/'
 
 from . import config
 from . import plugin
