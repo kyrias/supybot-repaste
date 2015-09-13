@@ -28,7 +28,6 @@
 
 ###
 
-from supybot.commands import *
 import supybot.callbacks as callbacks
 try:
     from supybot.i18n import PluginInternationalization
