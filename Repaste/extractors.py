@@ -127,9 +127,9 @@ class Zerobin(object):
             out, err = proc.communicate()
 
             if err == b'error: decryption failed\n':
-                irc.reply(_('Failed to repaste {id:} as a zerobin paste, '
+                irc.reply(_('Failed to repaste as a zerobin paste, '
                             'please repaste to a saner pastebin manually.'
-                            ).format(id=id))
+                            ))
 
             url = Ptpb.paste(out)
             notify(irc, 'zerobin paste', url)
