@@ -52,10 +52,14 @@ __url__ = 'https://github.com/kyrias/supybot-repaste/'
 
 from . import config
 from . import plugin
+from . import extractors
+from . import uploaders
 from imp import reload
 # In case we're being reloaded.
 reload(config)
 reload(plugin)
+reload(extractors)
+reload(uploaders)
 # Add more reloads here if you add third-party modules and want them to be
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
 
