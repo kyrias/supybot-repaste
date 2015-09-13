@@ -37,7 +37,7 @@ try:
 except ImportError:
     _ = lambda x: x
 
-from uploaders import Ptpb
+from .uploaders import Ptpb
 
 
 class PastebinCom(object):

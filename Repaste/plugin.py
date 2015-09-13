@@ -39,7 +39,7 @@ except ImportError:
     _ = lambda x: x
     internationalizeDocstring = lambda x: x
 
-from extractors import PastebinCom
+from .extractors import PastebinCom
 
 
 @internationalizeDocstring
