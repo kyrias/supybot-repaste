@@ -130,6 +130,7 @@ class Zerobin(object):
                 irc.reply(_('Failed to repaste as a zerobin paste, '
                             'please repaste to a saner pastebin manually.'
                             ))
+                continue
 
             url = Ptpb.paste(out)
             notify(irc, 'zerobin paste', url)
