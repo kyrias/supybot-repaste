@@ -67,7 +67,8 @@ def repaste_pastebin_com(irc, msg):
                                 data={'c': old_res.text})
 
         response = new_res.json()
-        irc.reply(_('{id:} was repasted as {url:}').format(id=id, url=response['url']))
+        irc.reply(_('{id:} was repasted as {url:}').
+                  format(id=id, url=response['url']))
 
 
 @internationalizeDocstring
