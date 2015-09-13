@@ -84,13 +84,12 @@ class HastebinCom(object):
         ids = HastebinCom.get_ids(string)
         HastebinCom.repaste_ids(irc, ids)
 
-
     def get_ids(string):
         regex = r'hastebin.com/(\w*)'
 
         ids = set()
         [ids.add(id) for id in re.findall(regex, string)
-                            if not id == 'raw']
+         if not id == 'raw']
 
         return ids
 
