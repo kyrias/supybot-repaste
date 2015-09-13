@@ -28,42 +28,45 @@
 
 ###
 
-from supybot.commands import *
-import supybot.callbacks as callbacks
+import re
+import requests
+
 try:
     from supybot.i18n import PluginInternationalization
-    from supybot.i18n import internationalizeDocstring
     _ = PluginInternationalization('Repaste')
 except ImportError:
-    # Placeholder that allows to run the plugin on a bot
-    # without the i18n module
     _ = lambda x: x
-    internationalizeDocstring = lambda x: x
 
-from extractors import PastebinCom
-
-
-@internationalizeDocstring
-class Repaste(callbacks.Plugin):
-    """Repaste URLs from bad pastebins"""
-    threaded = True
-
-    def __init__(self, irc):
-        self._parent = super(Repaste, self)
-        self._parent.__init__(irc)
-
-        self.pastebins = [
-            PastebinCom,
-        ]
-
-    def doPrivmsg(self, irc, msg):
-        string = msg.args[1]
-
-        for pastebin in self.pastebins:
-            pastebin.repaste(irc, string)
+from uploaders import Ptpb
 
 
-Class = Repaste
+class PastebinCom(object):
+    def repaste(irc, string):
+        if 'pastebin.com' not in string:
+            return
 
+        ids = PastebinCom.get_ids(string)
+        PastebinCom.repaste_ids(irc, ids)
 
-# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
+    def get_ids(string):
+        regex = r'pastebin\.com/(\w{8})'
+        raw_regex = r'pastebin\.com/raw.php\?i=(\w{8})'
+
+        ids = set()
+        [ids.add(id) for id in re.findall(regex, string)]
+        [ids.add(id) for id in re.findall(raw_regex, string)]
+
+        return ids
+
+    def repaste_ids(irc, ids):
+        for id in ids:
+            res = requests.get('https://pastebin.com/raw.php?i={}'.
+                               format(id))
+
+            url = Ptpb.paste(res.content)
+            if url:
+                irc.reply(_('{id:} was repasted as {url:}').
+                          format(id=id, url=url))
+            else:
+                irc.reply(_('Failed to repaste {id:}, please repaste to a'
+                            'saner pastebin manually.').format(id=id))

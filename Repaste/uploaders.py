@@ -28,42 +28,17 @@
 
 ###
 
-from supybot.commands import *
-import supybot.callbacks as callbacks
-try:
-    from supybot.i18n import PluginInternationalization
-    from supybot.i18n import internationalizeDocstring
-    _ = PluginInternationalization('Repaste')
-except ImportError:
-    # Placeholder that allows to run the plugin on a bot
-    # without the i18n module
-    _ = lambda x: x
-    internationalizeDocstring = lambda x: x
-
-from extractors import PastebinCom
+import requests
 
 
-@internationalizeDocstring
-class Repaste(callbacks.Plugin):
-    """Repaste URLs from bad pastebins"""
-    threaded = True
+class Ptpb(object):
+    def paste(data):
+        res = requests.post('https://ptpb.pw/',
+                            headers={'Accept': 'application/json'},
+                            data={'c': data})
 
-    def __init__(self, irc):
-        self._parent = super(Repaste, self)
-        self._parent.__init__(irc)
-
-        self.pastebins = [
-            PastebinCom,
-        ]
-
-    def doPrivmsg(self, irc, msg):
-        string = msg.args[1]
-
-        for pastebin in self.pastebins:
-            pastebin.repaste(irc, string)
-
-
-Class = Repaste
-
-
-# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
+        parsed = res.json()
+        if 'url' in parsed:
+            return parsed['url']
+        else:
+            return None
