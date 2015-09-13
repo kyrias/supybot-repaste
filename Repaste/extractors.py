@@ -76,7 +76,7 @@ class PastebinCom(object):
             notify(irc, url)
 
 
-def HastebinCom(object):
+class HastebinCom(object):
     def repaste(irc, string):
         if 'hastebin.com' not in string:
             return
