@@ -43,7 +43,8 @@ from .uploaders import Ptpb
 
 def notify(irc, id, url):
     if url:
-        irc.reply(_('{id:} was repasted as {url:}').
+        irc.reply(_('{id:} was repasted as {url:}. Please use a saner '
+                    'pastebin like https://ptpb.pw in the future.').
                   format(id=id, url=url))
     else:
         irc.reply(_('Failed to repaste {id:}, please repaste to a'
