@@ -73,7 +73,7 @@ class PastebinCom(object):
             res = requests.get('https://pastebin.com/raw.php?i={}'.
                                format(id))
 
-            url = Ptpb.paste(res.content)
+            url = Ptpb.paste(res.content.replace('\r\n', '\n'))
             notify(irc, id, url)
 
 
